@@ -1,0 +1,13 @@
+from sklearn.model_selection import train_test_split
+
+# Splitting undamaged data into training and test sets
+undamaged_train, undamaged_test = train_test_split(undamaged_df_clean, test_size=0.2, random_state=42)
+
+# Combining the test sets: 20% of undamaged and all of damaged
+test_data = pd.concat([undamaged_test, damaged_df_clean], ignore_index=True)
+
+# Labels for test set (0 for undamaged, 1 for damaged)
+test_labels = [0] * len(undamaged_test) + [1] * len(damaged_df_clean)
+
+# Displaying the split sizes
+len(undamaged_train), len(undamaged_test), len(test_data)
