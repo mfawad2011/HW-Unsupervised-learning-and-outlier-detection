@@ -1,0 +1,24 @@
+from scipy.stats import zscore
+import numpy as np
+
+# Handling missing data using linear interpolation
+undamaged_df.interpolate(method='linear', inplace=True)
+damaged_df.interpolate(method='linear', inplace=True)
+
+# Removing remaining NaN values if any after interpolation
+undamaged_df.dropna(inplace=True)
+damaged_df.dropna(inplace=True)
+
+# Detecting outliers using Z-score
+z_scores_undamaged = np.abs(zscore(undamaged_df))
+z_scores_damaged = np.abs(zscore(damaged_df))
+
+# Setting a threshold for Z-score
+threshold = 3
+
+# Removing outliers
+undamaged_df_clean = undamaged_df[(z_scores_undamaged < threshold).all(axis=1)]
+damaged_df_clean = damaged_df[(z_scores_damaged < threshold).all(axis=1)]
+
+# Displaying the cleaned datasets
+undamaged_df_clean.head(), damaged_df_clean.head()
