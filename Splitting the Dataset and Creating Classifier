@@ -1,0 +1,24 @@
+from sklearn.model_selection import train_test_split
+from sklearn.covariance import EmpiricalCovariance
+
+# Split the undamaged data
+train_undamaged, test_undamaged = train_test_split(undamaged_data_clean, test_size=0.25, random_state=42)
+
+# Combine test data
+test_data = pd.concat([test_undamaged, damaged_data_clean])
+
+# Fit the Mahalanobis distance-based classifier
+cov = EmpiricalCovariance().fit(train_undamaged)
+mahalanobis_distances = cov.mahalanobis(test_data)
+threshold = np.percentile(mahalanobis_distances, 95)
+
+# Predict using the threshold
+predictions = mahalanobis_distances > threshold
+true_labels = [0] * len(test_undamaged) + [1] * len(damaged_data_clean)
+
+# Calculate performance
+conf_matrix = confusion_matrix(true_labels, predictions)
+class_report = classification_report(true_labels, predictions)
+
+conf_matrix, class_report
+
